@@ -5,7 +5,7 @@ part 'product_detail_model.g.dart';
 @HiveType(typeId: 1)
 class ProductDetailModel{
   @HiveField(0)
-  final String url;
+  final List<String> url;
 
   @HiveField(1)
   final String name;
@@ -25,7 +25,11 @@ class ProductDetailModel{
   @HiveField(6)
   final int rating;
 
-  const ProductDetailModel({required this.url,required this.name,required this.category,required this.description,required this.price,required this.avalableCount,required this.rating});
+  @HiveField(7)
+  final bool isLiked;
+
+
+  const ProductDetailModel( {required this.url,required this.name,required this.category,required this.description,required this.price,required this.avalableCount,required this.rating, required this.isLiked,});
 
   Map<String,dynamic> toJson(){
     return {

@@ -1,13 +1,21 @@
 import 'package:e_commerce_responsive/framework/repository/auth/model/user.dart';
 import 'package:e_commerce_responsive/ui/auth/mobile/login/login.dart';
-import 'package:e_commerce_responsive/ui/utils/consts/app_key.dart';
+import 'package:e_commerce_responsive/ui/splash_scren.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/adapters.dart';
-// import 'package:hive_flutter/adapters.dart';
+import 'framework/repository/cart_checkout/model/orders_models.dart';
+import 'framework/repository/product/model/product_detail_model.dart';
 
 void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
-  runApp(const MyApp());
+  Hive.registerAdapter(UserAdapter());
+  Hive.openBox<User>('User_Box');
+  Hive.registerAdapter(OrdersModelsAdapter());
+  Hive.registerAdapter(ProductDetailModelAdapter());
+
+  runApp(const ProviderScope(child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -21,7 +29,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: Login(),
+      home: SplashScreen(),
     );
   }
 }

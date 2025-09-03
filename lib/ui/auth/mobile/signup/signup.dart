@@ -1,7 +1,9 @@
+import 'dart:io';
+
 import 'package:e_commerce_responsive/framework/repository/auth/model/user.dart';
 import 'package:e_commerce_responsive/ui/utils/consts/colors/colors.dart';
 import 'package:flutter/material.dart';
-import '../../../../framework/controllers/auth/signup/signup.dart';
+import 'package:image_picker/image_picker.dart';
 import '../../../../framework/controllers/auth/signup/signup_controller.dart';
 import '../../../utils/consts/theam/app_text_style.dart';
 import '../../helper/text_field_email.dart';
@@ -16,22 +18,63 @@ class Signup extends StatefulWidget {
 }
 
 class _SignupState extends State<Signup> {
+
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+
+
+  void showPicker({required BuildContext context}) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return SafeArea(
+          child: Wrap(
+            children: <Widget>[
+              ListTile(
+                leading: const Icon(Icons.photo_library),
+                title: const Text('Photo Library'),
+                onTap: () {
+                  getImage(ImageSource.gallery);
+                  Navigator.of(context).pop();
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.photo_camera),
+                title: const Text('Camera'),
+                onTap: () {
+                  getImage(ImageSource.camera);
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+  File? image;
+  Future getImage(ImageSource img) async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: img);
+    if(pickedFile == null) return;
+    final imageTemp = File(pickedFile.path);
+    image = imageTemp;
+  }
+
+  final _formKey = GlobalKey<FormState>();
+
+  bool isValidate(String value) {
+    if (value.isEmpty ||
+        !RegExp(
+          r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+",
+        ).hasMatch(value)) {
+      return false;
+    }
+    return true;
+  }
+
   @override
   Widget build(BuildContext context) {
-    TextEditingController emailController = TextEditingController();
-    TextEditingController passwordController = TextEditingController();
-
-    final _formKey = GlobalKey<FormState>();
-
-    bool isValidate(String value) {
-      if (value.isEmpty ||
-          !RegExp(
-            r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+",
-          ).hasMatch(value)) {
-        return false;
-      }
-      return true;
-    }
 
     return Scaffold(
       body: Padding(
@@ -125,16 +168,17 @@ class _SignupState extends State<Signup> {
                 Center(
                   child: ElevatedButton(
                     onPressed: () {
-
-                      if (_formKey.currentState!.validate()) {}
-                      SignUpController.addUser(
-                          User(
-                            email: emailController.text,
-                            password: passwordController.text,
-                            userId: "#12345",
-                            image: image!,
-                          )
-                      );
+                      if (_formKey.currentState!.validate()) {
+                        SignUpController.addUser(
+                            User(
+                              email: emailController.text,
+                              password: passwordController.text,
+                              userId: "#12345",
+                              image: image!,
+                            )
+                        );
+                        Navigator.pop(context);
+                      }
                     },
                     style: ElevatedButton.styleFrom(
                       minimumSize: Size(300, 60),

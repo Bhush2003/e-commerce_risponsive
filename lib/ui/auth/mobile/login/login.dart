@@ -1,10 +1,8 @@
-import 'dart:io';
-
+import 'package:e_commerce_responsive/framework/controllers/auth/signup/signup_controller.dart';
+import 'package:e_commerce_responsive/ui/utils/consts/app_key.dart';
 import 'package:e_commerce_responsive/ui/utils/consts/colors/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../../../../framework/controllers/auth/login_controller/login_controller.dart';
 import '../../../dashbord/mobile/dashbord.dart';
 import '../../../utils/consts/theam/app_text_style.dart';
 import '../../helper/text_field_email.dart';
@@ -90,30 +88,43 @@ class Login extends ConsumerWidget {
                   },
                 ),
 
-
                 SizedBox(height: 40),
 
                 Center(
                   child: ElevatedButton(
                     onPressed: () async {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(builder: (context) => Dashboard()),
-                      );
-                      if (_formKey.currentState!.validate()) {}
-                      bool x = await LoginController().checkUser(
-                        emailController.text,
-                        passwordController.text,
-                      );
+                      Navigator.push(context, MaterialPageRoute(builder: (context)=>Dashboard()));
+                      if (_formKey.currentState!.validate()) {
+                        String string = await SignUpController().checkUser(
+                          emailController.text,
+                          passwordController.text,
+                        );
+                        if(string==password_sucess){
+                          Navigator.of(context).push(
+                            MaterialPageRoute(builder: (context) => Dashboard()),
+                          );
+                        }else{
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: Text(user_not_fount),
+                                content: Text('please signup'),
+                                actions: <Widget>[
+                                  TextButton(
+                                    child: Text('OK'),
+                                    onPressed: () {
+                                      Navigator.of(context).pop(); // Dismiss the dialog
+                                    },
+                                  ),
+                                ],
+                              );
+                            },
+                          );
 
-                      if (x) {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(builder: (context) => Dashboard()),
-                        );
-                      } else {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(builder: (context) => Signup()),
-                        );
+                        }
                       }
+
                     },
                     style: ElevatedButton.styleFrom(
                       minimumSize: Size(300, 60),

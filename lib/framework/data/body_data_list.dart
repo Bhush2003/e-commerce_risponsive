@@ -1,27 +1,12 @@
+import 'dart:io';
+import 'package:e_commerce_responsive/framework/repository/auth/model/user.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
-import '../../ui/utils/consts/colors/colors.dart';
+import '../../ui/dashbord/mobile/helper/product_list.dart';
+import '../../ui/profile/mobile/profile.dart';
 
 List bodyDataList=[
-  ListView.separated(
-    shrinkWrap: true  ,
-    itemBuilder: (context, index) {
-      return ListTile(
-        title: Text("ListTitle"),
-        leading: Container(
-          height: 100,
-          width: 100,
-          padding: EdgeInsetsGeometry.all(5),
-          decoration: BoxDecoration(color: AppColors.secondary),
-        ),
-      );
-    },
-    separatorBuilder: (context, index) {
-      return SizedBox(height: 8);
-    },
-    itemCount: 10,
-  ),
+  ProductList(),
   Container(),
-  Container()
+  Profile(user: User(email: "email", password: "password", userId: "userId", image: File("")),)
 ];

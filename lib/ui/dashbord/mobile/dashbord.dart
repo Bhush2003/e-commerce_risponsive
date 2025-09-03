@@ -1,33 +1,39 @@
-import 'package:e_commerce_responsive/framework/data/body_data_list.dart';
 import 'package:e_commerce_responsive/ui/utils/consts/colors/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../framework/data/body_data_list.dart';
+import '../../../framework/repository/dashbord/repository/tab_provider.dart';
+import '../../cart_checkout/mobile/cart_screen.dart';
 
-class Dashboard extends StatefulWidget {
+class Dashboard extends ConsumerWidget {
   const Dashboard({super.key});
 
   @override
-  State<Dashboard> createState() => _DashbordState();
-}
-
-class _DashbordState extends State<Dashboard> {
-
-  int _selectedIndex = 0;
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    int selectedIndex = ref.watch(tabProvider);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColors.primary,
         title: Text("Dashboard"),
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => CartScreen()),
+              );
+            },
+            icon: Icon(Icons.shopping_cart_outlined),
+          ),
+        ],
         centerTitle: true,
       ),
-      body: bodyDataList[_selectedIndex],
+      body: bodyDataList[selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _selectedIndex,
-        onTap: (index){
-          setState(() {
-            _selectedIndex=index;
-          });
+        currentIndex: selectedIndex,
+        onTap: (index) {
+          ref.read(tabProvider.notifier).state = index;
         },
         selectedItemColor: AppColors.text,
         items: [
@@ -44,4 +50,3 @@ class _DashbordState extends State<Dashboard> {
     );
   }
 }
-
